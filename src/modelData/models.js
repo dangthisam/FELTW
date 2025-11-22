@@ -365,13 +365,23 @@ const userListModel = async function () {
   }
 };
 
-const userModel = function (userId) {
-  for (let i = 0; i < users.length; i++) {
-    if (users[i]._id === userId) {
-      return users[i];
+const userModel = async function (userId) {
+  try {
+    const response = await fetch(`https://3r33ms-8081.csb.app/api/user/${userId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch user');
     }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    // Fallback to local data if API fails
+    for (let i = 0; i < users.length; i++) {
+      if (users[i]._id === userId) {
+        return users[i];
+      }
+    }
+    return null;
   }
-  return null;
 };
 
 const photoOfUserModel = function (userId) {
