@@ -384,10 +384,20 @@ const userModel = async function (userId) {
   }
 };
 
-const photoOfUserModel = function (userId) {
-  return photos.filter(function (photo) {
-    return photo.user_id === userId;
-  });
+const photoOfUserModel = async function (userId) {
+  try {
+    const response = await fetch(`https://3r33ms-8081.csb.app/api/photo/photosOfUser/${userId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch photos of user');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching photos of user:', error);
+    // Fallback to local data if API fails
+    return photos.filter(function (photo) {
+      return photo.user_id === userId;
+    });
+  }
 };
 
 const schemaModel = function () {
